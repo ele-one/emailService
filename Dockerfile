@@ -4,20 +4,20 @@
 
 FROM node:8
 
-# Will create a new directory inside '/' i.e. /crudService and cd to it as well IN the docker image. Do not confuse with the pwd of local app where dockerfile exist and pwd inside docker image.
-WORKDIR crudService
+# Will create a new directory inside '/' i.e. /emailService and cd to it as well IN the docker image. Do not confuse with the pwd of local app where dockerfile exist and pwd inside docker image.
+WORKDIR emailService
 
 # Copy package.json first and not do 'Copy . .' because that will take time and npm run will try to run.
 
-# /crudService is a absolute path, could also have done --> COPY package.json .
-COPY package.json /crudService
+# /emailService is a absolute path, could also have done --> COPY package.json .
+COPY package.json /emailService
 
 RUN npm install
 
-# Copying everything from the local folder where the Dockerfile exist to the docker's '/crudService'
-COPY . /crudService
+# Copying everything from the local folder where the Dockerfile exist to the docker's '/emailService'
+COPY . /emailService
 
-# Note the above 'COPY . /crudService' could be achieved using relative path '.', since we are already in the crudService as we did WORKDIR above and did not change path after that.
+# Note the above 'COPY . /emailService' could be achieved using relative path '.', since we are already in the emailService as we did WORKDIR above and did not change path after that.
 # COPY . .
 
 CMD npm run postinstall && npm run start
