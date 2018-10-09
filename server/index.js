@@ -14,14 +14,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.get('/publishNotification', publishNotification);
-
+app.post('/subscribe', subscribe);
 /* + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
   API Route Functions
 + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + */
 
 function publishNotification(req, res) {
-  res.send('helloo from emial!')
+  res.send('helloo from email!')
 }
+
+function subscribe(req, res) {
+  if (!req.body.phone && !req.body.email) throw new Error("invalid input")
+  res.send('done')
+
+  console.log('^^^^^^^^^^^^^ .... ^^^^^^^^^^^^', req.body);
+}
+
 
 var port = process.env.PORT || 5004;
 
