@@ -3,6 +3,10 @@
 
 /*############# css for subscribe toggle button starts ############## */
 
+body {
+  color: white;
+}
+
 .switch {
   position: relative;
   display: inline-block;

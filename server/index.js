@@ -24,10 +24,16 @@ function publishNotification(req, res) {
 }
 
 function subscribe(req, res) {
-  if (!req.body.phone && !req.body.email) throw new Error("invalid input")
-  res.send('done')
 
   console.log('^^^^^^^^^^^^^ .... ^^^^^^^^^^^^', req.body);
+
+  if (!req.body.phone && !req.body.email) {
+    throw new Error("invalid input")
+  } else {
+    res.send('done')
+  }
+
+
 }
 
 

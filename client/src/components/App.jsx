@@ -70,13 +70,15 @@ class App extends React.Component {
   handleToggle(e) {
     if (e.target.checked === false) {
       this.setState({
-        toggle: false
+        toggle: false,
+        result: ''
       });
     }
 
     if (e.target.checked === true) {
        this.setState({
-        toggle: true
+        toggle: true,
+        submitted: false
       });
     }
 
