@@ -16,40 +16,37 @@ class App extends React.Component {
       phone: '',
       email: '',
       submitted: false,
-      result: ''
+      result: '',
+      userID: ''
     }
   }
 
-  // componentDidMount() {
-  //   $.ajax({
-  //     url: '/monitor',
-  //     success: (data) => {
-  //       this.setState({
-  //         services: JSON.parse(data)
-  //       })
-  //     },
-  //     error: (err) => {
-  //       console.log('err', err);
-  //     }
-  //   });
-  // }
 
-
-
+  componentDidMount() {
+    $.ajax({
+      url: '/getLoggedInUserID',
+      success: (userID) => {
+        this.setState({
+          userID: userID
+        })
+      },
+      error: (err) => {
+        console.log('err', err);
+      }
+    });
+  }
 // Check if user can have multiple subscription with phone and email
 
-
   handleSubmit(e) {
-    debugger
-    //
+
     this.setState({
       submitted: true //set to display or remove form accordingly.
     })
 
     $.ajax({
-      url: '/subscribe',
+      url: '/saveSubscriber',
       method: 'POST',
-      data: {phone: this.state.phone, email: this.state.email},
+      data: {userID: this.state.userID, phone: this.state.phone, email: this.state.email},
       success: (data) => {
         this.setState({
           result: 'Success'
@@ -61,7 +58,6 @@ class App extends React.Component {
         })
       }
     })
-    console.log(this.state.email, this.state.phone);
 
     event.preventDefault();
   }
@@ -105,7 +101,7 @@ class App extends React.Component {
     subscribeToggle = <SubscribeToggle handleToggle={this.handleToggle}/>
 
     if (this.state.toggle === true && this.state.submitted === false) {
-      subscribeForm = <SubscribeForm handleSubmit={this.handleSubmit} handleChange={this.handleChange} />
+      subscribeForm = <SubscribeForm handleSubmit={this.handleSubmit} handleChange={this.handleChange} phone={this.state.phone} email={this.state.email} />
     } else {
       subscribeForm = null
     }
@@ -120,7 +116,6 @@ class App extends React.Component {
 }
 
 export default App
-
 
 
 

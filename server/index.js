@@ -25,13 +25,13 @@ function publishNotification(req, res) {
 
 function subscribe(req, res) {
 
-  console.log('^^^^^^^^^^^^^ .... ^^^^^^^^^^^^', req.body);
+  // console.log('^^^^^^^^^^^^^ .... ^^^^^^^^^^^^', req.body);
 
-  if (!req.body.phone && !req.body.email) {
-    throw new Error("invalid input")
-  } else {
-    res.send('done')
-  }
+  // if (!req.body.phone && !req.body.email) {
+  //   throw new Error("invalid input")
+  // } else {
+  //   res.send('done')
+  // }
 
 
 }
