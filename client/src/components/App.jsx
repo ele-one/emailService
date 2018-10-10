@@ -38,6 +38,7 @@ class App extends React.Component {
 
   handleSubmit(e) {
 
+    e.preventDefault();
     this.setState({
       submitted: true //set to display or remove form accordingly.
     })
@@ -59,7 +60,7 @@ class App extends React.Component {
       }
     })
 
-    event.preventDefault();
+
   }
 
 
