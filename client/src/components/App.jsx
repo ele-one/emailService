@@ -18,15 +18,18 @@ class App extends React.Component {
       submitted: false,
       result: ''
     }
+
+    this.sessionID = document.cookie.split(' eleOne-brownies=')[1].split('.')[0].substring(4)
   }
 
 
   componentDidMount() {
     $.ajax({
-      url: '/getLoggedInUserID',
+      url: '/readSubscriber',
       success: (userID) => {
+        debugger
         this.setState({
-          userID: userID
+          sessionID: this.sessionID
         })
       },
       error: (err) => {
@@ -36,18 +39,11 @@ class App extends React.Component {
   }
 // Check if user can have multiple subscription with phone and email
 
-  handleSubmit(e) {
-
-    e.preventDefault();
-    this.setState({
-      submitted: true //set to display or remove form accordingly.
-    })
-
-    var sessionID = document.cookie.split(' eleOne-brownies=')[1].split('.')[0].substring(4)
+  callSnsSubscribe() {
     $.ajax({
-      url: '/saveSubscriber',
+      url: '/snsSubscribe',
       method: 'POST',
-      data: {sessionID: sessionID, phone: this.state.phone, email: this.state.email},
+      data: {phone: this.state.phone, email: this.state.email},
       success: (data) => {
         this.setState({
           result: 'Success'
@@ -59,6 +55,40 @@ class App extends React.Component {
         })
       }
     })
+  }
+
+
+  callSaveSubscriber() {
+    $.ajax({
+      url: '/saveSubscriber',
+      method: 'POST',
+      data: {sessionID: this.sessionID, phone: this.state.phone, email: this.state.email},
+      success: (data) => {
+        this.setState({
+          result: 'Success'
+        })
+      },
+      error: (err) => {
+        this.setState({
+          result: 'Failed'
+        })
+      }
+    })
+  }
+
+  handleSubmit(e) {
+
+    e.preventDefault();
+    this.setState({
+      submitted: true //set to display or remove form accordingly.
+    })
+
+    // var sessionID = document.cookie.split(' eleOne-brownies=')[1].split('.')[0].substring(4)
+
+
+    callSaveSubscriber()
+    callSnsSubscribe()
+
 
 
   }
@@ -119,5 +149,4 @@ class App extends React.Component {
 
 
 export default App
-
 

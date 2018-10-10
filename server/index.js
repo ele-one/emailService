@@ -1,6 +1,9 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var request = require('request')
+var request = require('request');
+var snsUtil = require('./sns-sms-email.js');
+var request = require('request');
+
 var app = express();
 
 app.use(express.static(__dirname + '/../client/dist'));
@@ -8,32 +11,45 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
+
+var BROWN_TOPIC_ARN = '';
+
+snsUtil.createOrGetTopic('brown_sns')
+.then( (topicARN) => {
+  BROWN_TOPIC_ARN = topicARN;
+  return topicARN
+})
+.then( (topicARN) => {
+  snsUtil.subscribeSMS(topicARN, '+1xxxxxxxxxx')
+  snsUtil.subscribeEmail(topicARN, 'xxxxxx@xxxxx.com');
+})
+
+
+
 /* + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
   API Routes
  + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +*/
 
 
-app.get('/publishNotification', publishNotification);
-app.post('/subscribe', subscribe);
+app.get('/snsPublish', snsPublish);
+app.post('/snsSubscribe', snsSubscribe);
+
 /* + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
   API Route Functions
 + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + */
 
-function publishNotification(req, res) {
-  res.send('helloo from email!')
+function snsPublish(req, res) {
+  console.log('************ in snsPublish **************')
+   snsUtil.publish(BROWN_TOPIC_ARN, 'New IOC has been created', 'New IOC has been created just now. Please investigate');
+   res.send('done');
 }
 
-function subscribe(req, res) {
-
-  // console.log('^^^^^^^^^^^^^ .... ^^^^^^^^^^^^', req.body);
-
-  // if (!req.body.phone && !req.body.email) {
-  //   throw new Error("invalid input")
-  // } else {
-  //   res.send('done')
-  // }
-
-
+function snsSubscribe(req, res) {
+  console.log('************ in snsSubscribe **************')
+  var data = JSON.parse(req.body);
+  if (data.phone) snsUtil.subscribeSMS(BROWN_TOPIC_ARN, data.phone);
+  if (data.email) snsUtil.subscribeEmail(BROWN_TOPIC_ARN, data.email);
+  res.send('done');
 }
 
 
