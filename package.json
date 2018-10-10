@@ -42,8 +42,9 @@
     "mongoose": "^4.13.14",
     "mysql": "^2.13.0",
     "mysql2": "^1.6.1",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "react": "^16.5.2",
+    "react-cookie": "^3.0.4",
+    "react-dom": "^16.5.2",
     "request": "^2.88.0",
     "semantic-ui-react": "^0.82.5",
     "sequelize": "^4.38.0"

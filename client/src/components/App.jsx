@@ -16,8 +16,7 @@ class App extends React.Component {
       phone: '',
       email: '',
       submitted: false,
-      result: '',
-      userID: ''
+      result: ''
     }
   }
 
@@ -43,10 +42,11 @@ class App extends React.Component {
       submitted: true //set to display or remove form accordingly.
     })
 
+    var sessionID = document.cookie.split(' eleOne-brownies=')[1].split('.')[0].substring(4)
     $.ajax({
       url: '/saveSubscriber',
       method: 'POST',
-      data: {userID: this.state.userID, phone: this.state.phone, email: this.state.email},
+      data: {sessionID: sessionID, phone: this.state.phone, email: this.state.email},
       success: (data) => {
         this.setState({
           result: 'Success'
@@ -97,7 +97,7 @@ class App extends React.Component {
   render() {
     var subscribeForm;
     var subscribeToggle;
-
+    var logo = <img src="https://localhost:7777/brownlogo.png" height="200" width="400"/>
     subscribeToggle = <SubscribeToggle handleToggle={this.handleToggle}/>
 
     if (this.state.toggle === true && this.state.submitted === false) {
@@ -108,12 +108,14 @@ class App extends React.Component {
 
 
     return (<div>
+      {logo}
       {subscribeToggle}
       {subscribeForm}
       {this.state.result}
     </div>)
   }
 }
+
 
 export default App
 

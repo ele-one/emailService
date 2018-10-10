@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Form } from 'semantic-ui-react'
 
-
 class SubscribeForm extends React.Component {
   constructor(props) {
     super(props);
@@ -10,7 +9,6 @@ class SubscribeForm extends React.Component {
   render() {
 
     var submitButton;
-
     const btnStyle = {
       color: 'blue',
       background:'white'
