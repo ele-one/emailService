@@ -21,7 +21,8 @@ class App extends React.Component {
       email: '',
       submitted: false,
       result: '',
-      subscribed: false,
+      subscribed: null,
+      subscriber: null
 
     }
 
@@ -34,10 +35,17 @@ class App extends React.Component {
       url: '/readSubscriber',
       method: 'POST',
       data: {sessionID: this.sessionID, phone: this.state.phone, email: this.state.email },
-      success: (isSubscribed) => {
-        if (isSubscribed === 'yes') {
+      success: (subscriber) => {
+        debugger
+        if (subscriber !== 'not found') {
           this.setState({
-            subscribed: true
+            subscribed: true,
+            subscriber: JSON.parse(subscriber),
+          })
+        }
+        if (subscriber === 'not found') {
+            this.setState({
+            subscribed: false
           })
         }
       },
@@ -73,7 +81,6 @@ class App extends React.Component {
         this.setState({
           result: 'Success'
         })
-
         this.callSnsSubscribe()
       },
       error: (err) => {
@@ -136,23 +143,23 @@ class App extends React.Component {
   render() {
     var subscribeForm;
     var subscribeToggle;
-    var isSubscribedMsg;
+
 
     var logo = <img src="https://localhost:7777/brownlogo.png" height="200" width="400"/>
-    subscribeToggle = <SubscribeToggle handleToggle={this.handleToggle}/>
+    subscribeToggle = <div> Toggle on to subscribe <SubscribeToggle handleToggle={this.handleToggle}/> </div>
 
     if (this.state.toggle === true && this.state.submitted === false && !this.state.subscribed) {
-      debugger
       subscribeForm = <SubscribeForm handleSubmit={this.handleSubmit} handleChange={this.handleChange} phone={this.state.phone} email={this.state.email} />
     } if (this.state.subscribed === true ) {
       debugger
-      subscribeForm = <p> You're subscribed! </p>
+      subscribeForm = <div> You're subscribed with <i> {this.state.subscriber.email} {this.state.subscriber.phone} </i> </div>
     }
 
 
     return (<div>
       {logo}
       {subscribeToggle}
+      <br/> <br/>
       {subscribeForm}
       {this.state.result}
     </div>)
