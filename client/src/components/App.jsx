@@ -10,34 +10,42 @@ class App extends React.Component {
     this.handleToggle = this.handleToggle.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.callSnsSubscribe = this.callSnsSubscribe.bind(this);
+    this.callSaveSubscriber = this.callSaveSubscriber.bind(this);
+    this.readSubscriber = this.readSubscriber.bind(this);
+
 
     this.state = {
       toggle: false,
       phone: '',
       email: '',
       submitted: false,
-      result: ''
+      result: '',
+      subscribed: false,
+
     }
 
     this.sessionID = document.cookie.split(' eleOne-brownies=')[1].split('.')[0].substring(4)
   }
 
 
-  componentDidMount() {
+  readSubscriber() {
     $.ajax({
       url: '/readSubscriber',
-      success: (userID) => {
-        debugger
-        this.setState({
-          sessionID: this.sessionID
-        })
+      method: 'POST',
+      data: {sessionID: this.sessionID, phone: this.state.phone, email: this.state.email },
+      success: (isSubscribed) => {
+        if (isSubscribed === 'yes') {
+          this.setState({
+            subscribed: true
+          })
+        }
       },
       error: (err) => {
-        console.log('err', err);
+       console.log(err)
       }
     });
   }
-// Check if user can have multiple subscription with phone and email
 
   callSnsSubscribe() {
     $.ajax({
@@ -45,9 +53,7 @@ class App extends React.Component {
       method: 'POST',
       data: {phone: this.state.phone, email: this.state.email},
       success: (data) => {
-        this.setState({
-          result: 'Success'
-        })
+        this.callSaveSubscriber()
       },
       error: (err) => {
         this.setState({
@@ -67,6 +73,8 @@ class App extends React.Component {
         this.setState({
           result: 'Success'
         })
+
+        this.callSnsSubscribe()
       },
       error: (err) => {
         this.setState({
@@ -83,13 +91,11 @@ class App extends React.Component {
       submitted: true //set to display or remove form accordingly.
     })
 
-    // var sessionID = document.cookie.split(' eleOne-brownies=')[1].split('.')[0].substring(4)
+    this.callSaveSubscriber()
 
-
-    callSaveSubscriber()
-    callSnsSubscribe()
-
-
+    this.readSubscriber((err, resp) => {
+      console.log(err, resp)
+    })
 
   }
 
@@ -105,8 +111,10 @@ class App extends React.Component {
     if (e.target.checked === true) {
        this.setState({
         toggle: true,
-        submitted: false
+        submitted: false // initially button is disabled if  email & phone are empty
       });
+
+      this.readSubscriber()
     }
 
   }
@@ -128,13 +136,17 @@ class App extends React.Component {
   render() {
     var subscribeForm;
     var subscribeToggle;
+    var isSubscribedMsg;
+
     var logo = <img src="https://localhost:7777/brownlogo.png" height="200" width="400"/>
     subscribeToggle = <SubscribeToggle handleToggle={this.handleToggle}/>
 
-    if (this.state.toggle === true && this.state.submitted === false) {
+    if (this.state.toggle === true && this.state.submitted === false && !this.state.subscribed) {
+      debugger
       subscribeForm = <SubscribeForm handleSubmit={this.handleSubmit} handleChange={this.handleChange} phone={this.state.phone} email={this.state.email} />
-    } else {
-      subscribeForm = null
+    } if (this.state.subscribed === true ) {
+      debugger
+      subscribeForm = <p> You're subscribed! </p>
     }
 
 
@@ -149,4 +161,5 @@ class App extends React.Component {
 
 
 export default App
+
 

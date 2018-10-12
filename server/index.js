@@ -11,20 +11,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-
-var BROWN_TOPIC_ARN = '';
-
-snsUtil.createOrGetTopic('brown_sns')
-.then( (topicARN) => {
-  BROWN_TOPIC_ARN = topicARN;
-  return topicARN
-})
-.then( (topicARN) => {
-  snsUtil.subscribeSMS(topicARN, '+1xxxxxxxxxx')
-  snsUtil.subscribeEmail(topicARN, 'xxxxxx@xxxxx.com');
-})
-
-
+var BROWN_TOPIC = 'brown_sns';
 
 /* + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
   API Routes
@@ -39,18 +26,44 @@ app.post('/snsSubscribe', snsSubscribe);
 + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + */
 
 function snsPublish(req, res) {
-  console.log('************ in snsPublish **************')
-   snsUtil.publish(BROWN_TOPIC_ARN, 'New IOC has been created', 'New IOC has been created just now. Please investigate');
-   res.send('done');
+  snsUtil.createOrGetTopic(BROWN_TOPIC)
+    .then( (topicARN) => {
+      snsUtil.publish(topicARN, 'Brown IOC has been created or updated', 'Brown IOC has been created or modified. Please investigate');
+      res.send('done');
+  })
 }
 
 function snsSubscribe(req, res) {
-  console.log('************ in snsSubscribe **************')
-  var data = JSON.parse(req.body);
-  if (data.phone) snsUtil.subscribeSMS(BROWN_TOPIC_ARN, data.phone);
-  if (data.email) snsUtil.subscribeEmail(BROWN_TOPIC_ARN, data.email);
-  res.send('done');
+  var data = req.body;
+  if (data.phone) {
+    snsUtil.createOrGetTopic(BROWN_TOPIC)
+      .then( (topicARN) => {
+       snsUtil.subscribeSMS(topicARN, data.phone, (err, result) => {
+         if (err) res.send(err);
+         if (result) res.send(result);
+       });
+    })
+      .catch( (err) => {
+      res.send(err)
+     })
+  }
+
+  if (data.email) {
+    snsUtil.createOrGetTopic(BROWN_TOPIC)
+      .then( (topicARN) => {
+       snsUtil.subscribeEmail(topicARN, data.email, (err, result) => {
+        if (err) res.send(err);
+        if (result) res.send(result);
+       })
+    })
+     .catch( (err) => {
+      res.send(err)
+     })
+  };
+
 }
+
+
 
 
 var port = process.env.PORT || 5004;

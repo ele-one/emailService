@@ -18,7 +18,6 @@ var AWS = require('aws-sdk');
 AWS.config.update({region: 'us-east-1'});
 
 var sns = new AWS.SNS();
-var brownTopic = 'xxxxx';
 
 module.exports = {
 
@@ -35,7 +34,7 @@ module.exports = {
 
   },
 
-  subscribeSMS: function(topic, phoneNumber) {
+  subscribeSMS: function(topic, phoneNumber, cb) {
     var params = {
       Protocol: 'sms',
       TopicArn: topic,
@@ -44,13 +43,13 @@ module.exports = {
     };
 
     sns.subscribe(params, function(err, data) {
-      if (err) console.log(err, err.stack);
-      else     console.log(data);
+      if (err) cb(err, null;
+      else     cb(null, data);
     });
   },
 
 
-  subscribeEmail: function(topic, email) {
+  subscribeEmail: function(topic, email, cb) {
     var params = {
       Protocol: 'Email',
       TopicArn: topic,
@@ -59,8 +58,8 @@ module.exports = {
     };
 
     sns.subscribe(params, function(err, data) {
-      if (err) console.log(err, err.stack);
-      else     console.log(data);
+      if (err) cb(err, null);
+      else     cb(null, data);
     });
   },
 
@@ -71,9 +70,7 @@ module.exports = {
 
     sns.listSubscriptionsByTopic(params, function(err, data) {
       if (err) console.log(err, err.stack);
-
       else {
-
         data.Subscriptions.forEach( (topicObj) => {
           if (topicObj.TopicArn === topic && topicObj.Endpoint === endpoint) {
 
