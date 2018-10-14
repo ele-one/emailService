@@ -144,20 +144,17 @@ class App extends React.Component {
     var subscribeForm;
     var subscribeToggle;
 
-
-    var logo = <img src="https://localhost:7777/brownlogo.png" height="200" width="400"/>
-    subscribeToggle = <div> Toggle on to subscribe <SubscribeToggle handleToggle={this.handleToggle}/> </div>
+    subscribeToggle = <div> <p> Toggle on to get subscribed to IOC alerts </p> <div> <SubscribeToggle handleToggle={this.handleToggle}/> </div> </div>
 
     if (this.state.toggle === true && this.state.submitted === false && !this.state.subscribed) {
       subscribeForm = <SubscribeForm handleSubmit={this.handleSubmit} handleChange={this.handleChange} phone={this.state.phone} email={this.state.email} />
     } if (this.state.subscribed === true ) {
       debugger
-      subscribeForm = <div> You're subscribed with <i> {this.state.subscriber.email} {this.state.subscriber.phone} </i> </div>
+      subscribeForm = <div> <p> You're subscribed with <i> {this.state.subscriber.email} {this.state.subscriber.phone} </i> </p> </div>
     }
 
 
     return (<div>
-      {logo}
       {subscribeToggle}
       <br/> <br/>
       {subscribeForm}
